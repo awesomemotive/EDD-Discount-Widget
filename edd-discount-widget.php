@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Easy Digital Downloads - Discount Widget
  * Description:     Allow third-party sites to display your current downloads through a simple widget!
- * Version:         1.0.1
+ * Version:         1.0.2
  * Author:          Daniel J Griffiths
  * Author URI:      http://www.ghost1227.com
  * Text Domain:     edd-discounts-widget
@@ -27,7 +27,7 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
         function edd_discounts_widget() {
             $widget_ops = array( 'classname' => 'edd_discounts_widget', 'description' => __( 'Display current discounts from any EDD powered site!', 'edd-discounts-widget' ) );
             $control_ops = array( 'id_base' => 'edd_discounts_widget' );
-            $this->WP_Widget( 'edd_discounts_widget', __( 'Discounts', 'edd-discounts-widget' ), $widget_ops, $control_ops );
+            $this->WP_Widget( 'edd_discounts_widget', __( 'Easy Digital Downloads - Discounts', 'edd-discounts-widget' ), $widget_ops, $control_ops );
         }
 
 
@@ -90,7 +90,11 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
         function form( $instance ) {
             $defaults = array(
                 'title'         => __( 'Discounts', 'edd-discounts-widget' ),
-                'max_discounts' => '5'
+                'site_url'      => '',
+                'api_key'       => '',
+                'api_token'     => '',
+                'max_discounts' => '5',
+                'hide_exp'      => 0
             );
 
             $instance = wp_parse_args( (array)$instance, $defaults );
