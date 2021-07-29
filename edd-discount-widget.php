@@ -21,13 +21,21 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
     /**
      * Main EDD_Discounts_Widget class
      *
-     * @since       1.0.0
+     * @since       1.0.3
      */
     class EDD_Discounts_Widget extends WP_Widget {
-        function edd_discounts_widget() {
-            $widget_ops = array( 'classname' => 'edd_discounts_widget', 'description' => __( 'Display current discounts from any EDD powered site!', 'edd-discounts-widget' ) );
-            $control_ops = array( 'id_base' => 'edd_discounts_widget' );
-            $this->WP_Widget( 'edd_discounts_widget', __( 'Easy Digital Downloads - Discounts', 'edd-discounts-widget' ), $widget_ops, $control_ops );
+        public function __construct() {
+            parent::__construct(
+                'edd_discounts_widget',
+                __( 'Easy Digital Downloads - Discounts', 'edd-discounts-widget' ),
+                array(
+                    'classname'   => 'edd_discounts_widget',
+                    'description' => __( 'Display current discounts from any EDD powered site!', 'edd-discounts-widget' ),
+                ),
+                array(
+                    'id_base' => 'edd_discounts_widget',
+                )
+            );
         }
 
 
