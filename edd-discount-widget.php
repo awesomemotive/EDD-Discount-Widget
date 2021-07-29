@@ -3,13 +3,13 @@
  * Plugin Name:     Easy Digital Downloads - Discount Widget
  * Description:     Allow third-party sites to display your current downloads through a simple widget!
  * Version:         1.0.2
- * Author:          Daniel J Griffiths
- * Author URI:      http://www.ghost1227.com
+ * Author:          Sandhills Development, LLC
+ * Author URI:      https://sandhillsdev.com
  * Text Domain:     edd-discounts-widget
  *
  * @package         EDD\Widgets\Discounts
- * @author          Daniel J Griffiths <dgriffiths@section214.com>
- * @copyright       Copyright (c) 2013-2014, Daniel J Griffiths
+ * @author          Sandhills Development, LLC
+ * @copyright       Copyright © 2021 Sandhills Development, LLC
  */
 
 // Exit if accessed directly
@@ -151,7 +151,7 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
  *
  * @access      public
  * @since       1.0.0
- * @author      Daniel J Griffiths
+ * @author      Sandhills Development, LLC
  * @return      void
  */
 function edd_register_discounts_widget() {
