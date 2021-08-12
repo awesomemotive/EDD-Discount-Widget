@@ -184,10 +184,6 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
 
             $response_body = json_decode( wp_remote_retrieve_body( $discounts ), true );
 
-            if ( is_wp_error( $response_body ) ) {
-                return $response_body;
-            }
-
             if ( isset( $response_body['error'] ) ) {
                 return new WP_Error(
                     'edd-discounts-api-error',
