@@ -56,10 +56,11 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
 
             $discounts = $this->get_discounts( $site_url, $api_key, $api_token, $max_discounts );
 
-            // A string is only returned in the event of an error.
-            if (is_string($discounts)) {
-                $response = __( 'Error:', 'edd-discounts-widget' ) . ' ' . $discounts;
-                echo '<p>' . esc_html( $response ) . '</p>';
+            if ( is_wp_error( $discounts ) ) {
+                if ( current_user_can( 'manage_options' ) ) {
+                    $response = __( 'Error:', 'edd-discounts-widget' ) . ' ' . $discounts->get_error_message();
+                    echo '<p>' . esc_html( $response ) . '</p>';
+                }
                 echo $after_widget;
                 return;
             }
@@ -140,6 +141,16 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
         }
 
 
+        /**
+         * Obtains the EDD discounts from the site URL.
+         * 
+         * @param mixed $site_url      The URL to extract the discounts from.
+         * @param mixed $api_key       The API key for the site.
+         * @param mixed $api_token     The API token for the site.
+         * @param int   $max_discounts The maximum number of discounts to obtain.
+         * 
+         * @return array|WP_Error      An array of discounts or a WP_Error object.
+         */
         function get_discounts( $site_url, $api_key, $api_token, $max_discounts ) {
 
             $site_url      = sanitize_text_field( $site_url );
@@ -148,7 +159,10 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
             $max_discounts = absint( $max_discounts );
 
             if ( empty( $site_url ) || empty( $api_key ) || empty( $api_token ) ) {
-                return __( 'Widget settings are incomplete.', 'edd-discounts-widget' );
+                return new WP_Error(
+                    'edd-discounts-no-settings',
+                    __( 'Widget settings are incomplete.', 'edd-discounts-widget' )
+                );
             }
 
             $options = array(
@@ -165,25 +179,31 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
             $discounts = wp_remote_get( $site_url . '/edd-api/discounts?key=' . rawurlencode( $api_key ) . '&token=' . rawurlencode( $api_token ) . '&format=json', $options );
 
             if ( is_wp_error( $discounts ) ) {
-                return esc_html( $discounts->get_error_message() );
+                return $discounts;
             }
 
             $response_body = json_decode( wp_remote_retrieve_body( $discounts ), true );
 
             if ( is_wp_error( $response_body ) ) {
-                return esc_html( $response_body->get_error_message() );
+                return $response_body;
             }
 
             if ( isset( $response_body['error'] ) ) {
-                return esc_html( $response_body['error'] );
+                return new WP_Error(
+                    'edd-discounts-api-error',
+                    $response_body['error']
+                );
             }
 
             if ( isset( $response_body['discounts'] ) ) {
                 return (array) $response_body['discounts'];
             }
 
-            // Fallback. Can happen if the target URL does not have EDD installed.
-            return __( 'An unknown error occurred! Please check your widget settings are valid.', 'edd-discounts-widget' );
+            // Fallback. Can happen if the target URL is valid but does not have EDD installed.
+            return new WP_Error(
+                'edd-discounts-unknown-error',
+                __( 'An unknown error occurred! Please check your widget settings are valid.', 'edd-discounts-widget' )
+            );
         }
     }
 }
