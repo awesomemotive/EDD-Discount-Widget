@@ -50,10 +50,6 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
             $hide_exp       = isset( $instance['hide_exp'] ) ? $instance['hide_exp'] : 0;
             $count          = 0;
 
-            echo $before_widget;
-
-            if( $title ) echo $before_title . $title . $after_title;
-
             $discounts = $this->get_discounts( $site_url, $api_key, $api_token, $max_discounts );
 
             if ( is_wp_error( $discounts ) ) {
@@ -61,9 +57,12 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
                     $response = __( 'Error:', 'edd-discounts-widget' ) . ' ' . $discounts->get_error_message();
                     echo '<p>' . esc_html( $response ) . '</p>';
                 }
-                echo $after_widget;
                 return;
             }
+
+            echo $before_widget;
+
+            if( $title ) echo $before_title . $title . $after_title;
 
             echo '<ul>';
 
