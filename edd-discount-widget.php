@@ -165,7 +165,7 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
             $discounts = wp_remote_get( $site_url . '/edd-api/discounts?key=' . rawurlencode( $api_key ) . '&token=' . rawurlencode( $api_token ) . '&format=json', $options );
 
             if ( is_wp_error( $discounts ) ) {
-                return $discounts->get_error_message();
+                return esc_html( $discounts->get_error_message() );
             }
 
             $response_body = json_decode( wp_remote_retrieve_body( $discounts ), true );
