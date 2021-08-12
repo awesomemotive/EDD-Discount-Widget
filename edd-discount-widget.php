@@ -46,8 +46,7 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
             $site_url       = isset( $instance['site_url'] ) ? $instance['site_url'] : '';
             $api_key        = isset( $instance['api_key'] ) ? $instance['api_key'] : '';
             $api_token      = isset( $instance['api_token'] ) ? $instance['api_token'] : '';
-            $max_discounts  = isset( $instance['max_discounts'] ) ? $instance['max_discounts'] : '';
-            $max_discounts  = ( is_numeric( $max_discounts ) ? $max_discounts : '5' );
+            $max_discounts  = isset( $instance['max_discounts'] ) && is_numeric( $instance['max_discounts'] ) ? $instance['max_discounts'] : '';
             $hide_exp       = isset( $instance['hide_exp'] ) ? $instance['hide_exp'] : 0;
             $count          = 0;
 
