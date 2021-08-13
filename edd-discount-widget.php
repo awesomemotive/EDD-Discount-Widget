@@ -146,16 +146,14 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
          * @param mixed $site_url      The URL to extract the discounts from.
          * @param mixed $api_key       The API key for the site.
          * @param mixed $api_token     The API token for the site.
-         * @param int   $max_discounts The maximum number of discounts to obtain.
          * 
          * @return array|WP_Error      An array of discounts or a WP_Error object.
          */
-        function get_discounts( $site_url, $api_key, $api_token, $max_discounts ) {
+        function get_discounts( $site_url, $api_key, $api_token ) {
 
             $site_url      = sanitize_text_field( $site_url );
             $api_key       = sanitize_text_field( $api_key );
             $api_token     = sanitize_text_field( $api_token );
-            $max_discounts = absint( $max_discounts );
 
             if ( empty( $site_url ) || empty( $api_key ) || empty( $api_token ) ) {
                 return new WP_Error(
