@@ -151,9 +151,9 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
          */
         function get_discounts( $site_url, $api_key, $api_token ) {
 
-            $site_url      = sanitize_text_field( $site_url );
-            $api_key       = sanitize_text_field( $api_key );
-            $api_token     = sanitize_text_field( $api_token );
+            $site_url  = sanitize_text_field( $site_url );
+            $api_key   = sanitize_text_field( $api_key );
+            $api_token = sanitize_text_field( $api_token );
 
             if ( empty( $site_url ) || empty( $api_key ) || empty( $api_token ) ) {
                 return new WP_Error(
