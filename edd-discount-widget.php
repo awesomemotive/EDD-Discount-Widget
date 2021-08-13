@@ -71,7 +71,7 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
                     echo '<li class="edd-discount">';
                     echo '<div class="edd-discount-title">' . esc_html( $discount['name'] ) . '</div>';
                     echo '<div class="edd-discount-code">' . __( 'Discount Code: ', 'edd-discounts-widget' ) . esc_html( $discount['code'] ) . '</div>';
-                    echo '<div class="edd-discount-value">' . __( 'Value: ', 'edd-discounts-widget' ) . ( $discount['type'] == 'flat' ? '$' . esc_html( $discount['amount'] ) . ' ' . __( 'off', 'edd-discounts-widget' ) : esc_html( $discount['amount'] ) . '% ' . __( 'off', 'edd_discounts_widget' ) ) . '</div>';
+                    echo '<div class="edd-discount-value">' . __( 'Value: ', 'edd-discounts-widget' ) . ( $discount['type'] == 'flat' ? '$' . esc_html( $discount['amount'] ) . ' ' . __( 'off', 'edd-discounts-widget' ) : esc_html( $discount['amount'] ) . '% ' . __( 'off', 'edd-discounts-widget' ) ) . '</div>';
                     if( isset( $discount['exp_date'] ) && !empty( $discount['exp_date'] ) && !$hide_exp ) {
                         echo '<div class="edd-discounts-exp">' . __( 'Expires: ', 'edd-discounts-widget' ) . date( get_option( 'date_format' ), strtotime( $discount['exp_date'] ) ) . '</div>';
                     }
