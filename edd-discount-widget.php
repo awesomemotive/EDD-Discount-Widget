@@ -50,7 +50,7 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
             $hide_exp       = isset( $instance['hide_exp'] ) ? $instance['hide_exp'] : 0;
             $count          = 0;
 
-            $discounts = $this->get_discounts( $site_url, $api_key, $api_token, $max_discounts );
+            $discounts = $this->get_discounts( $site_url, $api_key, $api_token );
 
             if ( is_wp_error( $discounts ) ) {
                 if ( current_user_can( 'manage_options' ) ) {
