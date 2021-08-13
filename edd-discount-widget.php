@@ -54,8 +54,8 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
 
             if ( is_wp_error( $discounts ) ) {
                 if ( current_user_can( 'manage_options' ) ) {
-                    $response = __( 'Error:', 'edd-discounts-widget' ) . ' ' . $discounts->get_error_message();
-                    echo '<p>' . esc_html( $response ) . '</p>';
+                    $response = __( 'Discounts Widget Error:', 'edd-discounts-widget' ) . ' ' . $discounts->get_error_message();
+                    echo $before_widget . '<p>' . esc_html( $response ) . '</p>' . $after_widget;
                 }
                 return;
             }
