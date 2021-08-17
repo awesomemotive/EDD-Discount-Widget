@@ -167,10 +167,8 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
             );
 
             $temp_url = parse_url( $site_url );
-            if ( isset( $temp_url['scheme'] ) ) {
-                if( !$temp_url['scheme'] == 'http' && !$temp_url['scheme'] == 'https' ) {
-                    $site_url = 'http://' . $site_url;
-                }
+            if ( isset( $temp_url['scheme'] ) && ! in_array( $temp_url['scheme'], array( 'http', 'https' ), true ) ) {
+                $site_url = 'http://' . $site_url;
             }
 
             $discounts = wp_remote_get( $site_url . '/edd-api/discounts?key=' . rawurlencode( $api_key ) . '&token=' . rawurlencode( $api_token ) . '&format=json', $options );
