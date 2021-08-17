@@ -167,7 +167,7 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
             );
 
             $temp_url = parse_url( $site_url );
-            if ( isset( $temp_url['scheme'] ) && ! in_array( $temp_url['scheme'], array( 'http', 'https' ), true ) ) {
+            if ( empty( $temp_url['scheme'] ) || ( isset( $temp_url['scheme'] ) && ! in_array( $temp_url['scheme'], array( 'http', 'https' ), true ) ) ) {
                 $site_url = 'http://' . $site_url;
             }
 
