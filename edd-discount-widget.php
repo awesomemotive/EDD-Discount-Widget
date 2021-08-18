@@ -50,22 +50,28 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
             $hide_exp       = isset( $instance['hide_exp'] ) ? $instance['hide_exp'] : 0;
             $count          = 0;
 
+            $discounts = $this->get_discounts( $site_url, $api_key, $api_token );
+
+            if ( is_wp_error( $discounts ) ) {
+                if ( current_user_can( 'manage_options' ) ) {
+                    $response = __( 'Discounts Widget Error:', 'edd-discounts-widget' ) . ' ' . $discounts->get_error_message();
+                    echo $before_widget . '<p>' . esc_html( $response ) . '</p>' . $after_widget;
+                }
+                return;
+            }
+
             echo $before_widget;
 
             if( $title ) echo $before_title . $title . $after_title;
-
-            $discounts = $this->get_discounts( $site_url, $api_key, $api_token, $max_discounts );
-            $discounts = json_decode( $discounts, true );
-            $discounts = $discounts['discounts'];
 
             echo '<ul>';
 
             foreach( $discounts as $discount ) {
                 if( $discount['status'] == 'active' && $count < $max_discounts ) {
                     echo '<li class="edd-discount">';
-                    echo '<div class="edd-discount-title">' . $discount['name'] . '</div>';
-                    echo '<div class="edd-discount-code">' . __( 'Discount Code: ', 'edd-discounts-widget' ) . $discount['code'] . '</div>';
-                    echo '<div class="edd-discount-value">' . __( 'Value: ', 'edd-discounts-widget' ) . ( $discount['type'] == 'flat' ? '$' . $discount['amount'] . ' ' . __( 'off', 'edd-discounts-widget' ) : $discount['amount'] . '% ' . __( 'off', 'edd_discounts_widget' ) ) . '</div>';
+                    echo '<div class="edd-discount-title">' . esc_html( $discount['name'] ) . '</div>';
+                    echo '<div class="edd-discount-code">' . __( 'Discount Code: ', 'edd-discounts-widget' ) . esc_html( $discount['code'] ) . '</div>';
+                    echo '<div class="edd-discount-value">' . __( 'Value: ', 'edd-discounts-widget' ) . ( $discount['type'] == 'flat' ? '$' . esc_html( $discount['amount'] ) . ' ' . __( 'off', 'edd-discounts-widget' ) : esc_html( $discount['amount'] ) . '% ' . __( 'off', 'edd-discounts-widget' ) ) . '</div>';
                     if( isset( $discount['exp_date'] ) && !empty( $discount['exp_date'] ) && !$hide_exp ) {
                         echo '<div class="edd-discounts-exp">' . __( 'Expires: ', 'edd-discounts-widget' ) . date( get_option( 'date_format' ), strtotime( $discount['exp_date'] ) ) . '</div>';
                     }
@@ -134,21 +140,61 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
         }
 
 
-        function get_discounts( $site_url, $api_key, $api_token, $max_discounts ) {
+        /**
+         * Obtains the EDD discounts from the site URL.
+         * 
+         * @param mixed $site_url      The URL to extract the discounts from.
+         * @param mixed $api_key       The API key for the site.
+         * @param mixed $api_token     The API token for the site.
+         * 
+         * @return array|WP_Error      An array of discounts or a WP_Error object.
+         */
+        function get_discounts( $site_url, $api_key, $api_token ) {
+
+            $site_url  = sanitize_text_field( $site_url );
+            $api_key   = sanitize_text_field( $api_key );
+            $api_token = sanitize_text_field( $api_token );
+
+            if ( empty( $site_url ) || empty( $api_key ) || empty( $api_token ) ) {
+                return new WP_Error(
+                    'edd-discounts-no-settings',
+                    __( 'Widget settings are incomplete.', 'edd-discounts-widget' )
+                );
+            }
+
             $options = array(
                 'timeout'   => 5
             );
 
             $temp_url = parse_url( $site_url );
-            if( !$temp_url['scheme'] == 'http' && !$temp_url['scheme'] == 'https' )
+            if ( empty( $temp_url['scheme'] ) || ( isset( $temp_url['scheme'] ) && ! in_array( $temp_url['scheme'], array( 'http', 'https' ), true ) ) ) {
                 $site_url = 'http://' . $site_url;
+            }
 
             $discounts = wp_remote_get( $site_url . '/edd-api/discounts?key=' . rawurlencode( $api_key ) . '&token=' . rawurlencode( $api_token ) . '&format=json', $options );
-            $discounts = $discounts['body'];
 
-            if( !$discounts || is_wp_error( $discounts ) ) $discounts = __( 'An unknown error occurred!', 'edd-discounts-widget' );
+            if ( is_wp_error( $discounts ) ) {
+                return $discounts;
+            }
 
-            return $discounts;
+            $response_body = json_decode( wp_remote_retrieve_body( $discounts ), true );
+
+            if ( isset( $response_body['error'] ) ) {
+                return new WP_Error(
+                    'edd-discounts-api-error',
+                    $response_body['error']
+                );
+            }
+
+            if ( isset( $response_body['discounts'] ) ) {
+                return (array) $response_body['discounts'];
+            }
+
+            // Fallback. Can happen if the target URL is valid but does not have EDD installed.
+            return new WP_Error(
+                'edd-discounts-unknown-error',
+                __( 'An unknown error occurred! Please check your widget settings are valid.', 'edd-discounts-widget' )
+            );
         }
     }
 }
