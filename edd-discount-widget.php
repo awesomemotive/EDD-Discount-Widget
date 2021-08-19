@@ -24,6 +24,7 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
      * @since       1.0.3
      */
     class EDD_Discounts_Widget extends WP_Widget {
+
         public function __construct() {
             parent::__construct(
                 'edd_discounts_widget',
@@ -38,8 +39,7 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
             );
         }
 
-
-        function widget( $args, $instance ) {
+        public function widget( $args, $instance ) {
             extract( $args, EXTR_SKIP );
     
             $title          = apply_filters( 'widget_title', $instance['title'] );
@@ -86,8 +86,7 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
             echo $after_widget;
         }
 
-
-        function update( $new_instance, $old_instance ) {
+        public function update( $new_instance, $old_instance ) {
             $instance = $old_instance;
 
             $instance['title']          = strip_tags( $new_instance['title'] );
@@ -100,8 +99,7 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
             return $instance;
         }
 
-
-        function form( $instance ) {
+        public function form( $instance ) {
             $defaults = array(
                 'title'         => __( 'Discounts', 'edd-discounts-widget' ),
                 'site_url'      => '',
@@ -139,7 +137,6 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
 
         }
 
-
         /**
          * Obtains the EDD discounts from the site URL.
          * 
@@ -149,7 +146,7 @@ if( !class_exists( 'EDD_Discounts_Widget' ) )  {
          * 
          * @return array|WP_Error      An array of discounts or a WP_Error object.
          */
-        function get_discounts( $site_url, $api_key, $api_token ) {
+        private function get_discounts( $site_url, $api_key, $api_token ) {
 
             $site_url  = sanitize_text_field( $site_url );
             $api_key   = sanitize_text_field( $api_key );
